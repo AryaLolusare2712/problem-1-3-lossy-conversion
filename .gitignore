@@ -1,7 +1,5 @@
 __pycache__/
-*.pyc
-.venv/
-venv/
-.env
-node_modules/
-.DS_Store
+.pytest_cache/
+*.py[cod]
+report.json
+metadata.csv

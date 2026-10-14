@@ -1,13 +1,28 @@
-# Problem 1.3: Lossy Conversion
+# Task 3 — Lossy Conversion ROI Estimator
 
-## Submission instructions
+Metadata-driven utility to decide whether incoming videos are worth re-encoding before VLM captioning.
 
-1. Install the **AIntropy Grader Bot** GitHub App (https://github.com/apps/aintropy-grader-bot) and grant it access to your fork, if you haven't already — we can't evaluate your submission without this.
-2. Put your code under `src/`.
-3. Put your write-up under `docs/` — markdown, slides, a notebook, or another format of your choosing are all fine, as long as it's committed in this repo.
-4. Fill in `run.yaml` with the **exact** commands needed to set up and run your code. We run these commands exactly as written to evaluate your submission — this is the one part of the submission we read literally, not loosely: if `run.yaml` doesn't work, we can't see your code run.
-5. Push to your own fork's default branch any time during your test's time limit. No pull request is needed or expected.
+## Requirements
+- Python 3.10+
+- FFmpeg/ffprobe installed and on PATH (for metadata probing)
+- Python packages: `pip install -r requirements.txt`
 
-Once you start the test you have until your test's time limit to complete the assignment — see your invitation email for the exact duration. We ignore any commits pushed to your repo after that.
+## Run
+```bash
+python src/main.py --input /path/to/video_corpus --output report.json --metadata-csv metadata.csv
+```
 
-Questions? careers@aintropy.ai
+Tune assumptions using measurements from your infrastructure:
+```bash
+python src/main.py --input ./videos --size-ratio 0.45 --encode-speed 2.0 --io-seconds-per-gb 12 --vlm-passes 4 --storage-cost-per-gb-month 0.02 --retention-months 6
+```
+
+`--size-ratio` is compressed size/original size; `--encode-speed` is media seconds encoded per wall-clock second. Outputs include per-video decisions and aggregate estimated time savings. Estimates are not benchmarks.
+
+## Tests
+```bash
+pip install pytest
+python -m pytest tests -v
+```
+
+See [`docs/design.md`](docs/design.md) for the decision model, codec trade-offs, benchmarking plan, and limitations.
